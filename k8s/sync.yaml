@@ -70,4 +70,4 @@ metadata:
   namespace: aacgreymatter
 data:
   # property-like keys; each key maps to a simple value
-  GREYMATTER_GIT_REMOTE: ""
+  GREYMATTER_GIT_REMOTE: "git@github.com:greymatter-io/greymatter-core.git"
