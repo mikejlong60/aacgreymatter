@@ -5,7 +5,7 @@ import (
 )
 
 globals: gsl.#DefaultContext & {
-	edge_host: ""
+	edge_host: "192.168.5.15:10809"
 	namespace: "aacgreymatter"
 	
 	// Please contact your mesh administrators as to what
