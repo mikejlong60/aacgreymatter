@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    name: aac-service
+    app: aac-service
+  name: aac-service
+  namespace: aacgreymatter
+  annotations:
+    "greymatter.io/inject-sidecar-to": "10808"
+spec:
+  serviceName: aac-service
+  selector:
+    matchLabels:
+      app: aac-service
+  template:
+    metadata:
+      labels:
+        app: aac-service
+    spec:
+      containers:
+      - name: aac-service
+        env:
+          - name: APP_ROOT
+            value: "/app"
+          - name: HOST_URL
+            value: "0.0.0.0:3000"
+          - name: HOST_PROTOCOL
+            value: "HTTP"
+          - name: HOST_TLS_CERT_FILE
+            value: "/app/devcerts/server/server.pem"
+          - name: HOST_TLS_KEY_FILE
+            value: "/app/devcerts/server/server-key.pem"
+          - name: ENT_CONNECTOR_URL
+            #value: "https://connector.docker:3000/"
+          - name: ENT_CONNECTOR_TLS_CA_FILE
+            value: "/app/devcerts/server/server.pem"
+          - name: ENT_CONNECTOR_TLS_CERT_FILE
+            value: "/app/devcerts/server/server.pem"
+          - name: ENT_CONNECTOR_TLS_KEY_FILE
+            value: "/app/devcerts/server/server-key.pem"
+          #- name: ENT_CONNECTOR_SKIP_VERIFY
+            #value: "true"
+          - name: DEPENDENCY_HEALTH_POLLING_INTERVAL
+            value: "3s"
+          - name: ALLOW_DISCONNECTED_MODE
+            value: "true"
+          - name: TTL_USER
+            value: "1440s"
+          - name: STATICROOT
+            value: "../static"
+          - name: REGO_PATH
+            value: "./icms2013/rego/"
+          - name: ICMS_DICTIONARY_PATH
+            value: "./icms2013/datadict/"
+          - name: DOMAIN
+            value: "JWICS"
+          - name: REDIS_URL
+            value: "localhost:6379"
+          - name: REDIS_PASSWORD
+            value: "password"
+          - name: REDIS_USERNAME
+            value: "default"
+          - name: REDIS_DIAS_CONNECTED_DB
+            value: "4"
+          - name: REDIS_DIAS_DISCONNECTED_DB
+            value: "5"
+          - name: L1_CACHE_CULL_INTERVAL
+            value: "60s"
+          - name: L1_EXPIRED_USER_CULL_INTERVAL
+            value: "60s"
+          - name: MAX_L1_CACHE_BYTES
+            value: "600000"
+          - name: TEMPLATES_POLICIES_PATH
+            value: "/templatefiles/policies/"
+          - name: TEMPLATES_SNIPPETS_PATH
+            value: "/templatefiles/snippets/"
+          - name: TEMPLATES_USERS_PATH
+            value: "/templatefiles/users/"
+          - name: TEMPLATES_PARSE_INTERVAL
+            value: "15s"
+          - name: UI_BANNER_PREFIX
+            value: "For Demo Purposes Only - "
+          - name: UI_BANNER_POSTFIX
+            value: ""
+          - name: LOG_LEVEL
+            value: "DEBUG"
+          - name: DEVELOPMENT_MODE
+            value: "true"
+        volumeMounts:
+          - name: certs
+            mountPath: "/app/devcerts/server"
+            readOnly: true
+          #- name: HOST_TLS_CERT_FILE
+            #value: "./devcerts/server/server.cert.pem"
+          #- name: HOST_TLS_KEY_FILE
+            #value: "./devcerts/server/server.key.pem"
+        image: docker.artifactory.code.dicelab.net/dpaas-internal/ent-aac-service:dev
+        ports:
+        - containerPort: 3000
+          hostPort: 3000
+        # These volume mounts are persistent. Each pod in the Statefulset
+        # gets a volume mounted based on this field.
+        imagePullPolicy: Always
+      - name: redis
+        image: redis:latest
+        ports:
+        - containerPort: 6379
+          name: redis
+        env:
+          - name: REDIS_PASSWORD
+            value: "redis"
+      imagePullSecrets:
+        - name: gm-docker-secret
+        - name: dicelab-docker-secret
+      volumes:
+      - name: certs
+        secret:
+          secretName: aac-certs
+          optional: true
