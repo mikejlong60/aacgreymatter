@@ -10,6 +10,7 @@ metadata:
     "greymatter.io/inject-sidecar-to": "10808"
 spec:
   serviceName: aac-service
+#  replicas: 3
   selector:
     matchLabels:
       app: aac-service
