@@ -103,14 +103,14 @@ spec:
         # These volume mounts are persistent. Each pod in the Statefulset
         # gets a volume mounted based on this field.
         imagePullPolicy: Always
-      - name: redis
-        image: redis:latest
-        ports:
-        - containerPort: 6379
-          name: redis
-        env:
-          - name: REDIS_PASSWORD
-            value: "redis"
+#      - name: redis
+#        image: redis:latest
+#        ports:
+#        - containerPort: 6379
+#          name: redis
+#        env:
+#          - name: REDIS_PASSWORD
+#            value: "redis"
       imagePullSecrets:
         - name: gm-docker-secret
         - name: dicelab-docker-secret
