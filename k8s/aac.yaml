@@ -10,7 +10,7 @@ metadata:
     "greymatter.io/inject-sidecar-to": "10808"
 spec:
   serviceName: aac-service
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: aac-service
@@ -99,7 +99,7 @@ spec:
         image: docker.artifactory.code.dicelab.net/dpaas-internal/ent-aac-service:dev
         ports:
         - containerPort: 3000
-          hostPort: 3000
+          hostPort: 3010
         # These volume mounts are persistent. Each pod in the Statefulset
         # gets a volume mounted based on this field.
         imagePullPolicy: Always
